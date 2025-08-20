@@ -18,7 +18,7 @@ Content-Type: application/json
     client.global.set("jwt_token", response.body.token);
 %}
 
-###
+### Good request
 POST http://localhost:8888/api/feedback
 Content-Type: application/json
 Authorization: Bearer {{jwt_token}}
@@ -28,7 +28,7 @@ Authorization: Bearer {{jwt_token}}
   "rating": 4
 }
 
-###
+### rating not in range
 POST http://localhost:8888/api/feedback
 Content-Type: application/json
 Authorization: Bearer {{jwt_token}}
@@ -37,3 +37,24 @@ Authorization: Bearer {{jwt_token}}
   "note": "Im a bad request",
   "rating": 10
 }
+###note null should be allowed
+POST http://localhost:8888/api/feedback
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+     "note": null,
+  "rating": 5
+}
+
+### get all feedbacks
+GET http://localhost:8888/api/feedback
+Content-Type: application/json
+
+### get 1 feedback
+GET http://localhost:8888/api/feedback/2
+Content-Type: application/json
+
+### get non existant feedback
+GET http://localhost:8888/api/feedback/100000
+Content-Type: application/json

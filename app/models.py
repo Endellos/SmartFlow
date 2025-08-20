@@ -19,7 +19,7 @@ class Notation(models.Model):
 class User(models.Model):
     id = fields.IntField(pk=True)
     username = fields.CharField(max_length=50, unique=True)
-    password = fields.CharField(max_length=128)  # store encrypted passwords
+    password = fields.CharField(max_length=128)  # encrypted password
 
 
 # -----------------------------
@@ -29,7 +29,7 @@ class Feedback(models.Model):
     id = fields.IntField(pk=True)
     user = fields.ForeignKeyField('models.User', related_name='feedbacks')
     rating = fields.IntField(choices=[1, 2, 3, 4, 5])  # 1-5
-    note = fields.TextField()
+    note = fields.TextField(null=True)  # optional
 
 
 # -----------------------------

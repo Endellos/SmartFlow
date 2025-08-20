@@ -5,5 +5,6 @@ urlpatterns = [
     (r"/api/register", RegisterHandler),
     (r"/api/login", LoginHandler),
     (r"/api/feedback", FeedbackHandler),
+    (r"/api/feedback/([0-9]+)", FeedbackHandler),
 
 ]
