@@ -14,3 +14,26 @@ Content-Type: application/json
   "username": "user1",
   "password": "password1"
 }
+> {%
+    client.global.set("jwt_token", response.body.token);
+%}
+
+###
+POST http://localhost:8888/api/feedback
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "note": "This is my feedback text",
+  "rating": 4
+}
+
+###
+POST http://localhost:8888/api/feedback
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "note": "Im a bad request",
+  "rating": 10
+}

@@ -1,4 +1,6 @@
-# app/handlers/user_handlers.py
+# app/handlers/user_handler.py
+import logging
+
 import tornado.web
 import tornado.escape
 import jwt
@@ -60,10 +62,11 @@ class LoginHandler(tornado.web.RequestHandler):
             return
 
         payload = {
-            "sub": user.id,
+            "sub": str(user.id),
             "username": user.username,
             "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1)
         }
+
         token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
 
         self.write({"token": token})
