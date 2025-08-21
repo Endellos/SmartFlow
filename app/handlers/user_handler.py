@@ -8,7 +8,7 @@ import datetime
 from passlib.hash import bcrypt
 from tortoise.transactions import in_transaction
 from app.models import User
-from app.handlers.base_handler import BaseHandler, SECRET_KEY
+from app.handlers.base_auth_handler import BaseAuthHandler, SECRET_KEY
 
 
 class RegisterHandler(tornado.web.RequestHandler):

@@ -2,8 +2,8 @@ POST http://localhost:8888/api/register
 Content-Type: application/json
 
 {
-  "username": "user1",
-  "password": "password1"
+  "username": "user2",
+  "password": "password2"
 }
 
 ###
@@ -11,8 +11,8 @@ POST http://localhost:8888/api/login
 Content-Type: application/json
 
 {
-  "username": "user1",
-  "password": "password1"
+  "username": "user2",
+  "password": "password2"
 }
 > {%
     client.global.set("jwt_token", response.body.token);
@@ -52,9 +52,68 @@ GET http://localhost:8888/api/feedback
 Content-Type: application/json
 
 ### get 1 feedback
-GET http://localhost:8888/api/feedback/2
+GET http://localhost:8888/api/feedback/1
 Content-Type: application/json
 
 ### get non existant feedback
 GET http://localhost:8888/api/feedback/100000
 Content-Type: application/json
+
+### post comment
+POST http://localhost:8888/api/comment
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "feedback_id": 1,
+  "content": "This is a comment"
+}
+
+### Create a new feedback notation
+POST http://localhost:8888/api/feedback/1/notations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "value": 1
+}
+
+### Update an existing feedback notation
+PATCH http://localhost:8888/api/feedback/1/notations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "value": -1
+}
+
+### Get summary of notations for a feedback
+GET http://localhost:8888/api/feedback/1/notations/summary
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+
+### --- Comment notations ---
+
+### Create a new comment notation
+POST http://localhost:8888/api/comment/1/notations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "value": 1
+}
+
+### Update an existing comment notation
+PATCH http://localhost:8888/api/comment/1/notations
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "value": 0
+}
+
+### Get summary of notations for a comment
+GET http://localhost:8888/api/comment/1/notations/summary
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}

@@ -22,7 +22,7 @@ if not SECRET_KEY:
     print("WARNING: Using auto-generated SECRET_KEY for dev only!")
 
 
-class BaseHandler(RequestHandler):
+class BaseAuthHandler(RequestHandler):
     """Base handler with JWT auth and automatic user fetching"""
 
     async def prepare(self):

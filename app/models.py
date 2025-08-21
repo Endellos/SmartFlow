@@ -10,7 +10,7 @@ class Notation(models.Model):
     value = fields.IntField(choices=[-1, 0, 1])  # -1, 0, 1
 
     class Meta:
-        abstract = True  # will not create a table for this
+        abstract = True
 
 
 # -----------------------------
@@ -30,6 +30,7 @@ class Feedback(models.Model):
     user = fields.ForeignKeyField('models.User', related_name='feedbacks')
     rating = fields.IntField(choices=[1, 2, 3, 4, 5])  # 1-5
     note = fields.TextField(null=True)  # optional
+    notations = fields.ReverseRelation['FeedbackNotation']
 
 
 # -----------------------------

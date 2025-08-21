@@ -1,11 +1,10 @@
 import tornado
 
-
-from app.handlers.base_handler import BaseHandler
+from app.handlers.base_auth_handler import BaseAuthHandler
 from app.models import Feedback
 
 
-class FeedbackHandler(BaseHandler):
+class FeedbackHandler(BaseAuthHandler):
     async def post(self):
         self.require_auth()  # ensures only logged-in users can post
 
@@ -27,7 +26,8 @@ class FeedbackHandler(BaseHandler):
         self.write({"id": feedback.id, "note": feedback.note, "message": "Feedback created"})
 
     async def get(self, feedback_id=None):
-        """Get all feedbacks or a single feedback by id"""
+        """Get all feedbacks or a single feedback by id, both are lazy loaded if u need the comments call `methodname`.
+       """
         if feedback_id:
             feedback = await Feedback.get_or_none(id=feedback_id).prefetch_related('user')
             if not feedback:
@@ -39,16 +39,16 @@ class FeedbackHandler(BaseHandler):
                 "user_id": feedback.user.id,
                 "username": feedback.user.username,  # for display purpose
                 "note": feedback.note,
-                "rating": feedback.rating
+                "rating": feedback.rating,
+
             })
         else:
             all_feedbacks = await Feedback.all().prefetch_related('user')
             feedback_list = [{
                 "id": fb.id,
                 "user_id": fb.user.id,
-                "username": fb.user.username, # for display purpose
+                "username": fb.user.username,  # for display purpose
                 "note": fb.note,
                 "rating": fb.rating
             } for fb in all_feedbacks]
             self.write({"feedbacks": feedback_list})
-
