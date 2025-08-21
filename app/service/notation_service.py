@@ -93,3 +93,5 @@ async def get_notation_summary(model, user, entity_id):
         "negative_notations": negative,
         "user_notation": user_notation,
     }, 200
+
+

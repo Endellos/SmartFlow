@@ -41,6 +41,7 @@ class FeedBackNotationHandler(BaseAuthHandler):
         resp, status = await update_notation(FeedbackNotation, self.current_user, feedback_id, value)
         self.set_status(status)
         self.write(resp)
+        return
 
     # get summary of notations for a feedback
     async def get(self, feedback_id):
