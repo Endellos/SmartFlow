@@ -47,5 +47,22 @@ class CommentHandler(BaseAuthHandler):
                     "content": comment.content
                 })
 
+
         elif feedback_id:  # GET /feedback/{feedback_id}/comments
-            comments = await Comment.filter(feedback_id=feedback_id)
+            comments = await Comment.filter(feedback_id=feedback_id).prefetch_related("user")
+            if not comments:
+                self.set_status(404)
+                return self.write({"error": "No comments found"})
+            self.write({
+
+                "comments": [
+
+                    {
+                        "id": c.id,
+                        "user_id": c.user.id,
+                        "username": c.user.username,
+                        "feedback_id": feedback_id,
+                        "content": c.content,
+                    } for c in comments
+                ]
+            })
