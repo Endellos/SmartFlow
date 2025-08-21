@@ -58,3 +58,12 @@ class BaseAuthHandler(RequestHandler):
         """Raise 401 if user not authenticated"""
         if not self.current_user:
             raise HTTPError(401, "Unauthorized")
+
+    def write_error(self, status_code, **kwargs):
+        """Return JSON for all errors instead of HTML"""
+        self.set_header("Content-Type", "application/json")
+        if "exc_info" in kwargs:
+            exc = kwargs["exc_info"][1]
+            self.finish({"error": str(exc)})
+        else:
+            self.finish({"error": self._reason})
