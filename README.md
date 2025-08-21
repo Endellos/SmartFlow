@@ -1,10 +1,23 @@
 ## SmartFlow
+SmartFlow is a lightweight asynchronous web application for managing feedback and comments with positive/negative notation tracking. It supports JWT-based authentication and provides RESTful endpoints for creating, updating, and retrieving feedback notations.
 
 ### Stack
 - Python 3.12
 - Tornado
-- aiosqlite
+- Tortoise(ORM)
+- aiosqlite (DB):sqlite that allows async operations
+- JWT based authentication
 
-### DB choice reasoning
-this is a small project so a small bd like sqlight would be my choice if it wasn't for the asyncronous nature of the project this is why I choose aiosqlite that gives me the fast lightweight db with the async nature of the project.
+### Features
+Create, update, and get feedback notations
+
+Track positive and negative counts for feedback
+
+Support user-specific notations
+
+JWT-secured endpoints for authentication
+
+Handles both Feedback and Comment notations
+
+
 

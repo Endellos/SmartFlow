@@ -2,7 +2,7 @@
 import tornado.ioloop
 import tornado.web
 from app.urls import urlpatterns
-from db.init_db import init_db  # your async DB init
+from db.init_db import init_db# your async DB init
 
 
 class Application(tornado.web.Application):
@@ -12,6 +12,7 @@ class Application(tornado.web.Application):
 
 async def start_app():
     await init_db()  # initialize DB
+
     print("DB initialized")
 
 
