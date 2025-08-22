@@ -1,4 +1,4 @@
-from tornado_swagger.setup import setup_swagger
+
 
 from app.handlers.comment_handler import CommentHandler
 from app.handlers.comment_notation_handler import CommentNotationHandler

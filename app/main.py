@@ -1,7 +1,7 @@
 # app/main.py
 import tornado.ioloop
 import tornado.web
-from tornado_swagger.setup import setup_swagger
+
 
 from app.urls import urlpatterns
 from db.init_db import init_db# your async DB init
