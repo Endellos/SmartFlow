@@ -6,13 +6,18 @@ import tornado.escape
 import jwt
 import datetime
 from passlib.hash import bcrypt
+from tornado_swagger.model import register_swagger_model
 from tortoise.transactions import in_transaction
 from app.models import User
 from app.handlers.base_auth_handler import BaseAuthHandler, SECRET_KEY
 
 
+
+
 class RegisterHandler(tornado.web.RequestHandler):
+
     async def post(self):
+
         data = tornado.escape.json_decode(self.request.body)
         username = data.get("username")
         password = data.get("password")

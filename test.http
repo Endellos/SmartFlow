@@ -1,4 +1,4 @@
-POST http://localhost:8888/api/register
+POST https://smartflow-uwxq.onrender.com/api/register
 Content-Type: application/json
 
 {
@@ -123,3 +123,7 @@ Authorization: Bearer {{jwt_token}}
 GET http://localhost:8888/api/comment/1/notations/summary
 Content-Type: application/json
 Authorization: Bearer {{jwt_token}}
+
+
+###
+GET http://localhost:8888/

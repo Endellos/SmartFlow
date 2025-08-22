@@ -1,10 +1,14 @@
+from tornado_swagger.setup import setup_swagger
+
 from app.handlers.comment_handler import CommentHandler
 from app.handlers.comment_notation_handler import CommentNotationHandler
 from app.handlers.feedback_handler import FeedbackHandler
 from app.handlers.feedback_notation_handler import FeedBackNotationHandler
+from app.handlers.health_handler import HealthCheckHandler
 from app.handlers.user_handler import RegisterHandler, LoginHandler
 
 urlpatterns = [
+    (r"/", HealthCheckHandler),
     (r"/api/register", RegisterHandler),
     (r"/api/login", LoginHandler),
     (r"/api/feedback", FeedbackHandler),
@@ -20,3 +24,5 @@ urlpatterns = [
     (r"/api/comment/([0-9]+)/notations", CommentNotationHandler),
     (r"/api/comment/([0-9]+)/notations/summary", CommentNotationHandler),
 ]
+
+

@@ -1,6 +1,8 @@
 # app/main.py
 import tornado.ioloop
 import tornado.web
+from tornado_swagger.setup import setup_swagger
+
 from app.urls import urlpatterns
 from db.init_db import init_db# your async DB init
 
@@ -8,6 +10,7 @@ from db.init_db import init_db# your async DB init
 class Application(tornado.web.Application):
     def __init__(self):
         super().__init__(urlpatterns, debug=True)
+
 
 
 async def start_app():
@@ -18,8 +21,12 @@ async def start_app():
 
 if __name__ == "__main__":
     app = Application()
+
     app.listen(8888)
     print("Server running on http://localhost:8888")
+
+
+
 
     # Schedule async DB init inside Tornado's IOLoop
     tornado.ioloop.IOLoop.current().add_callback(start_app)
