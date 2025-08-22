@@ -19,7 +19,439 @@ JWT-secured endpoints for authentication
 
 Handles both Feedback and Comment notations
 
-### Installation
+### Limitations
+The app is currently using SQLite as its database, which is not suitable for production use. This means that if the container stops or is removed, all data will be lost. I recognize that this is a limitation; however, for this small project, SQLite is sufficient. One improvement I would make in the future is to switch to a database like PostgreSQL for better reliability and scalability.
+
+## Installation
+
+### Pull Docker
+
+You can pull the Docker image from Docker Hub:
+
+```bash
+docker pull endellos/smartflow:latest
+```
+
+### Run the Docker container
+```bash
+docker run -p 8888:8888 endellos/smartflow:latest
+```
+
+## Deployed version
+You can access the deployed version of SmartFlow at [https://smartflow-uwxq.onrender.com/](https://smartflow-uwxq.onrender.com/).
+
+It is a free version, so it may take some time to start up. Please be patient.
+
+## Usage
+There is a `test.http` file in the root directory that contains example requests for testing the endpoints. You can use this file to test the API endpoints. 
+
+# SmartFlow API Endpoints
+
+---
+
+## 1. Health Check
+
+
+
+- **Endpoint:** `/`  
+- **Method:** `GET`  
+- **Authentication:** No  
+- **Description:** Returns a simple health check message to verify that the server is running.
+- **Request Body:** None
+- **Example Request:**
+```bash
+curl -X GET http://localhost:8888/
+```
+- **Example Response:**
+```json
+{
+  "message": "App is running"
+}
+```
+
+## 2. Register a User
+
+- **Endpoint:** `/api/register`  
+- **Method:** `POST`  
+- **Authentication:** No  
+- **Description:** Registers a new user with a username and password.  
+
+### Request Body:
+```json
+{
+  "username": "user3",
+  "password": "password2"
+}
+```
+- **Example Request:**
+```bash
+curl -X POST http://localhost:8888/api/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "user3",
+    "password": "password2"
+  }'
+```
+- **Expected Response (200 OK):**
+````
+{
+  "message": "User registered",
+  "id": 1
+}
+````
+- **Error Responses:**
+````
+{
+  "error": "Username required"
+}
+
+{
+  "error": "Username already exists"
+}
+`````
+
+## 3. Login
+
+- **Endpoint: /api/login**
+
+- **Method: POST**
+
+- **Authentication: No**
+
+- **Description: Logs in an existing user and returns a JWT token.**
+
+- **Request Body:**
+```json
+{
+  "username": "user3",
+  "password": "password2"
+}
+```
+
+- **Example Request:**
+```bash
+curl -X POST http://localhost:8888/api/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "user3",
+    "password": "password2"
+  }'
+```
+- **Expected Response (200 OK):**
+````
+{
+  "token": "<JWT_TOKEN>"
+}
+````
+Notes:
+
+Use this token in the Authorization: Bearer <JWT_TOKEN> header for all authenticated endpoints.
+## 4.Create Feedback
+
+- **Endpoint: /api/feedback**
+
+- **Method: POST**
+
+- **Authentication: Yes (JWT)**
+
+- **Description: Creates a new feedback entry with a note and rating.**
+
+- **Request Body:**
+````
+{
+  "note": "This is my feedback",
+  "rating": 4
+}
+````
+
+- **Example Request:**
+```bash
+curl -X POST http://localhost:8888/api/feedback \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <JWT_TOKEN>" \
+  -d '{
+    "note": "This is my feedback",
+    "rating": 4
+  }'
+  ```
+
+- **Expected Response (200 OK):**
+````
+{
+  "id": 1,
+  "note": "This is my feedback",
+  "message": "Feedback created"
+}
+````
+
+- **Error Responses:**
+```
+{
+  "error": "Rating must be an integer between 1 and 5"
+}
+```
+## 5. Get Feedback
+
+- **Endpoint:**
+
+/api/feedback → all feedbacks
+
+/api/feedback/{feedback_id} → single feedback
+
+- **Method: GET**
+
+- **Authentication: No**
+
+- **Description: Retrieves all feedback or a single feedback by ID.**
+
+- **Example Request (All Feedbacks):**
+````
+curl -X GET http://localhost:8888/api/feedback 
+````
+
+- **Example Request (Single Feedback):**
+```bash
+curl -X GET http://localhost:8888/api/feedback/1 
+```
+- **Expected Response (All Feedbacks):**
+```
+{
+  "feedbacks": [
+    {
+      "id": 1,
+      "user_id": 2,
+      "username": "user3",
+      "note": "This is my feedback",
+      "rating": 4
+    }
+  ]
+}
+```
+- **Single feedback (404 if not found):**
+`````
+{
+  "error": "Feedback not found"
+}
+`````
+## 6. Post Comment
+
+- **Endpoint: /api/comment**
+
+- **Method: POST**
+
+- **Authentication: Yes (JWT)**
+
+- **Description: Creates a comment for a feedback.**
+
+- **Request Body:**
+````
+{
+  "feedback_id": 1,
+  "content": "This is a comment"
+}
+````
+
+- **Example Request:**
+````
+curl -X POST http://localhost:8888/api/comment \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <JWT_TOKEN>" \
+  -d '{
+    "feedback_id": 1,
+    "content": "This is a comment"
+  }
+  ````
+
+Expected Response (200 OK):
+````
+{
+  "id": 5,
+  "text": "This is a comment",
+  "message": "Comment created"
+}
+````
+Error Responses:
+````
+{
+  "error": "Comment content is required"
+}
+````
+````
+{
+  "error": "Feedback not found"
+}
+````
+7. Get Comments
+
+Endpoint:
+
+/api/comment/{comment_id} → single comment
+
+/api/feedback/{feedback_id}/comments → all comments for a feedback
+
+Method: GET
+
+Authentication:no
+
+Description: Retrieves comments for a feedback or a single comment by ID.
+
+Example Request (All Comments for Feedback 1):
+````
+curl -X GET http://localhost:8888/api/feedback/1/comments \
+
+````
+````
+Example Request (Single Comment 1):
+curl -X GET http://localhost:8888/api/comment/1 \
+
+````
+Expected Response:
+````
+{
+  "comments": [
+    {
+      "id": 5,
+      "user_id": 2,
+      "username": "user3",
+      "feedback_id": 1,
+      "content": "This is a comment"
+    }
+  ]
+}
+````
+
+404 if not found:
+````
+{
+  "error": "No comments found"
+}
+````
+## 8. Feedback Notations
+
+Create a Notation
+
+Endpoint: /api/feedback/{feedback_id}/notations
+
+Method: POST
+
+Authentication: Yes (JWT)
+
+Description: Adds a new positive or negative notation to a feedback.
+````
+Request Body:
+{
+  "value": 1
+}
+````
+Example Request:
+````
+curl -X POST http://localhost:8888/api/feedback/1/notations \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <JWT_TOKEN>" \
+  -d '{
+    "value": 1
+  }'
+
+````
+## Update a Notation
+
+Endpoint: /api/feedback/{feedback_id}/notations
+
+Method: PATCH
+
+Authentication: Yes (JWT)
+
+Description: Updates an existing notation for a feedback.
+````
+Request Body:
+{
+  "value": -1
+}
+````
+
+Get Summary
+
+Endpoint: /api/feedback/{feedback_id}/notations/summary
+
+Method: GET
+
+Authentication: Yes (JWT)
+
+Description: Retrieves the total positive, negative, and current user’s notation value for a feedback.
+
+Example Request:
+````
+curl -X GET http://localhost:8888/api/feedback/1/notations/summary \
+  -H "Authorization: Bearer <JWT_TOKEN>"
+````
+Expected Response:
+````
+{
+  "positive": 3,
+  "negative": 1,
+  "user_value": 1
+}
+````
+
+9. Comment Notations
+
+Create a Notation
+
+Endpoint: /api/comment/{comment_id}/notations
+
+Method: POST
+
+Authentication: Yes (JWT)
+
+Description: Adds a positive or negative notation to a comment.
+
+Request Body:
+````
+{
+  "value": 1
+}
+
+````
+Update a Notation
+
+Endpoint: /api/comment/{comment_id}/notations
+
+Method: PATCH
+
+Authentication: Yes (JWT)
+
+Description: Updates an existing notation for a comment.
+````
+Request Body:
+{
+  "value": 0
+}
+
+````
+Get Summary
+
+Endpoint: /api/comment/{comment_id}/notations/summary
+
+Method: GET
+
+Authentication: Yes (JWT)
+
+Description: Retrieves the total positive, negative, and current user’s notation value for a comment.
+
+Example Request:
+````
+curl -X GET http://localhost:8888/api/comment/1/notations/summary \
+  -H "Authorization: Bearer <JWT_TOKEN>"
+````
+Expected Response:
+````
+{
+  "positive": 2,
+  "negative": 0,
+  "user_value": 0
+}
+````
+
 
 
 
