@@ -1,12 +1,12 @@
 # app/handlers/user_handler.py
-import logging
+
 
 import tornado.web
 import tornado.escape
 import jwt
 import datetime
 from passlib.hash import bcrypt
-from tornado_swagger.model import register_swagger_model
+
 from tortoise.transactions import in_transaction
 from app.models import User
 from app.handlers.base_auth_handler import BaseAuthHandler, SECRET_KEY
