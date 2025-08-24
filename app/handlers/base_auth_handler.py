@@ -55,7 +55,7 @@ class BaseAuthHandler(RequestHandler):
         return self.current_user_obj
 
     def require_auth(self):
-        """Raise 401 if user not authenticated"""
+        """Raise 401 if user not authenticated. Add this to the beginning of any handler method that requires auth."""
         if not self.current_user:
             raise HTTPError(401, "Unauthorized")
 
