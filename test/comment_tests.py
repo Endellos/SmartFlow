@@ -7,7 +7,7 @@ from tornado.testing import AsyncHTTPTestCase, gen_test
 import jwt
 
 from app.models import User, Feedback, Comment
-from app.handlers.comment_handler import CommentHandler
+from app.handlers.comment_handler import CommentHandler, SingleCommentHandler, FeedbackCommentsHandler
 from app.handlers.base_auth_handler import SECRET_KEY
 from test.db_test_config import init_inmemory_db, close_inmemory_db
 
@@ -41,20 +41,14 @@ class TestCommentHandlerIntegration(AsyncHTTPTestCase):
     def get_app(self):
         return Application([
             (r"/comments", CommentHandler),
-            (r"/comments/([0-9]+)", CommentHandler),
-            (r"/feedback/([0-9]+)/comments", CommentHandler),
+            (r"/comments/([0-9]+)", SingleCommentHandler),
+            (r"/feedback/([0-9]+)/comments", FeedbackCommentsHandler)
         ])
     async def _create_user_and_feedback(self):
         user = await User.create(username="testuser", password="hashedpw")
         fb = await Feedback.create(user=user, note="Great product", rating=5)
         return user, fb
 
-    def get_app(self):
-        return Application([
-            (r"/comments", CommentHandler),
-            (r"/comments/([0-9]+)", CommentHandler),
-            (r"/feedback/([0-9]+)/comments", CommentHandler),
-        ])
 
     def _generate_token(self, user):
         payload = {
@@ -127,19 +121,21 @@ class TestCommentHandlerIntegration(AsyncHTTPTestCase):
         data = json.loads(response.body)
         self.assertEqual(data["error"], "Feedback not found")
 
-
-    # ------------------ Get
+        # ------------------ GET /comments/{id} ------------------
 
     @gen_test
     async def test_get_single_comment_happy_path(self):
+        comment = await Comment.create(
+            user=self.user, feedback=self.feedback, content="Seed comment"
+        )
         response = await self.http_client.fetch(
-            self.get_url(f"/comments/{self.comment.id}"),
+            self.get_url(f"/comments/{comment.id}"),
             method="GET",
             raise_error=False
         )
         self.assertEqual(response.code, 200)
         data = json.loads(response.body)
-        self.assertEqual(data["id"], self.comment.id)
+        self.assertEqual(data["id"], comment.id)
         self.assertEqual(data["user_id"], self.user.id)
         self.assertEqual(data["feedback_id"], self.feedback.id)
         self.assertEqual(data["content"], "Seed comment")
@@ -155,13 +151,12 @@ class TestCommentHandlerIntegration(AsyncHTTPTestCase):
         data = json.loads(response.body)
         self.assertEqual(data["error"], "Comment not found")
 
+        # ------------------ GET /feedback/{id}/comments ------------------
+
     @gen_test
     async def test_get_all_comments_for_feedback(self):
-        # add an extra comment
-        await Comment.create(
-            user=self.user, feedback=self.feedback, content="Another comment"
-        )
-
+        # Add some comments
+        await Comment.create(user=self.user, feedback=self.feedback, content="Another comment")
         response = await self.http_client.fetch(
             self.get_url(f"/feedback/{self.feedback.id}/comments"),
             method="GET",
@@ -169,7 +164,20 @@ class TestCommentHandlerIntegration(AsyncHTTPTestCase):
         )
         self.assertEqual(response.code, 200)
         data = json.loads(response.body)
-        self.assertGreater(len(data.get("comments", [])), 0)
+        self.assertGreaterEqual(len(data.get("comments", [])), 1)
+
+    @gen_test
+    async def test_get_all_comments_for_feedback_empty(self):
+        # Create a new feedback with no comments
+        empty_feedback = await Feedback.create(user=self.user, note="Empty feedback", rating=3)
+        response = await self.http_client.fetch(
+            self.get_url(f"/feedback/{empty_feedback.id}/comments"),
+            method="GET",
+            raise_error=False
+        )
+        self.assertEqual(response.code, 200)
+        data = json.loads(response.body)
+        self.assertEqual(data.get("comments", []), [])
 
     @gen_test
     async def test_get_all_comments_for_nonexistent_feedback(self):
@@ -178,5 +186,6 @@ class TestCommentHandlerIntegration(AsyncHTTPTestCase):
             method="GET",
             raise_error=False
         )
-
         self.assertEqual(response.code, 404)
+        data = json.loads(response.body)
+        self.assertEqual(data["error"], "Feedback not found")

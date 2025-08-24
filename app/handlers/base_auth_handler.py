@@ -19,7 +19,7 @@ if not SECRET_KEY:
     import secrets
 
     SECRET_KEY = secrets.token_urlsafe(32)
-    print("WARNING: Using auto-generated SECRET_KEY for dev only!")
+    logging.warning("WARNING: Using auto-generated SECRET_KEY for dev only!")
 
 
 class BaseAuthHandler(RequestHandler):
@@ -30,14 +30,14 @@ class BaseAuthHandler(RequestHandler):
         self.current_user_obj = None  # default
 
         auth = self.request.headers.get("Authorization")
-        logging.info(f"Authorization header: {auth}")
+
         if not auth or not auth.startswith("Bearer "):
             return  # no token, self.current_user_obj stays None
 
         token = auth.split(" ")[1]
         try:
             payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-            logging.info("Decoded JWT payload: %s", payload)
+
             user_id = payload.get("sub")
 
             if user_id:

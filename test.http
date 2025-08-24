@@ -66,11 +66,16 @@ Authorization: Bearer {{jwt_token}}
 
 {
   "feedback_id": 1,
-  "content": "This is a comment "
+  "content": "This is a comment 3"
 }
 
-###
-GET http://localhost:8888/api/feedback/1/comments
+### Get all comments for a feedback
+GET http://localhost:8888/api/feedback/2/comments
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+### Get a specific comment
+GET http://localhost:8888/api/comment/1
 Content-Type: application/json
 Authorization: Bearer {{jwt_token}}
 

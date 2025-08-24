@@ -31,38 +31,39 @@ class CommentHandler(BaseAuthHandler):
         )
         self.write({"id": comment.id, "text": comment.content, "message": "Comment created"})
 
-    async def get(self, feedback_id=None, comment_id=None):
-        if comment_id:  # GET /comments/{id}
-            comment = await Comment.get_or_none(id=comment_id).prefetch_related('user', 'feedback')
-            if not comment:
-                self.set_status(404)
-                self.write({"error": "Comment not found"})
-                return
-            self.write(
+
+class SingleCommentHandler(BaseAuthHandler):
+    async def get(self, comment_id):
+        comment = await Comment.get_or_none(id=comment_id).select_related("user", "feedback")
+        if not comment:
+            self.set_status(404)
+            return self.write({"error": "Comment not found"})
+        self.write({
+            "id": comment.id,
+            "user_id": comment.user.id,
+            "username": comment.user.username,
+            "feedback_id": comment.feedback.id,
+            "content": comment.content
+        })
+
+
+class FeedbackCommentsHandler(BaseAuthHandler):
+    async def get(self, feedback_id):
+
+        feedback = await Feedback.get_or_none(id=feedback_id)
+        if not feedback:
+            self.set_status(404)
+            return self.write({"error": "Feedback not found"})
+
+        comments = await Comment.filter(feedback_id=feedback_id).select_related("user")
+        self.write({
+            "comments": [
                 {
-                    "id": comment.id,
-                    "user_id": comment.user.id,
-                    "username": comment.user.username,  # for display purpose
-                    "feedback_id": comment.feedback.id,
-                    "content": comment.content
-                })
-
-
-        elif feedback_id:  # GET /feedback/{feedback_id}/comments
-            comments = await Comment.filter(feedback_id=feedback_id).prefetch_related("user")
-            if not comments:
-                self.set_status(404)
-                return self.write({"error": "No comments found"})
-            self.write({
-
-                "comments": [
-
-                    {
-                        "id": c.id,
-                        "user_id": c.user.id,
-                        "username": c.user.username,
-                        "feedback_id": feedback_id,
-                        "content": c.content,
-                    } for c in comments
-                ]
-            })
+                    "id": c.id,
+                    "user_id": c.user.id,
+                    "username": c.user.username,
+                    "feedback_id": feedback_id,
+                    "content": c.content,
+                } for c in comments
+            ]
+        })
