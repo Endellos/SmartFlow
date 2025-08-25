@@ -1,5 +1,7 @@
+import logging
 import os
 
+import aiosqlite
 from tortoise import Tortoise
 
 async def init_db():
@@ -9,6 +11,9 @@ async def init_db():
         db_url=f'sqlite://{db_path}',
         modules={'models': ['app.models']}
     )
-    await Tortoise.generate_schemas(safe=True)  # creates missing tables only
-    print(f"Database ready at {db_path}")
+    await Tortoise.generate_schemas(safe=True)
+    # logging.info(f"Database ready at {db_path}")
+
+
+
 

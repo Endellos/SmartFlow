@@ -1,9 +1,9 @@
-POST https://smartflow-uwxq.onrender.com/api/register
+POST http://localhost:8888/api/register
 Content-Type: application/json
 
 {
-  "username": "user3",
-  "password": "password2"
+  "username": "margarita",
+  "password": "password"
 }
 
 ###
@@ -11,20 +11,20 @@ POST http://localhost:8888/api/login
 Content-Type: application/json
 
 {
-  "username": "user2",
-  "password": "password2"
+  "username": "margarita",
+  "password": "password"
 }
 > {%
     client.global.set("jwt_token", response.body.token);
 %}
 
-### Good request
+### Create a new feedback
 POST http://localhost:8888/api/feedback
 Content-Type: application/json
 Authorization: Bearer {{jwt_token}}
 
 {
-  "note": "This is my feedback text",
+  "note": "I like this app",
   "rating": 4
 }
 
@@ -66,11 +66,11 @@ Authorization: Bearer {{jwt_token}}
 
 {
   "feedback_id": 1,
-  "content": "This is a comment 3"
+  "content": "I agree with this feedback"
 }
 
 ### Get all comments for a feedback
-GET http://localhost:8888/api/feedback/2/comments
+GET http://localhost:8888/api/feedback/1/comments
 Content-Type: application/json
 Authorization: Bearer {{jwt_token}}
 
@@ -90,7 +90,7 @@ Authorization: Bearer {{jwt_token}}
 }
 
 ### Update an existing feedback notation
-PATCH http://localhost:8888/api/feedback/1/notations
+PATCH http://localhost:8888/api/feedback/2/notations
 Content-Type: application/json
 Authorization: Bearer {{jwt_token}}
 

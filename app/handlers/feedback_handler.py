@@ -23,6 +23,7 @@ class FeedbackHandler(BaseAuthHandler):
             note=feedback_text,
             rating=rating
         )
+        self.set_status(201)
         self.write({"id": feedback.id, "note": feedback.note, "message": "Feedback created"})
 
     async def get(self, feedback_id=None):

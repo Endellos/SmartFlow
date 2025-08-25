@@ -14,8 +14,7 @@ SmartFlow is a lightweight asynchronous web application for managing feedback an
 - Summary of notations for feedback and comments
 - User registration and login
 - Server-side validation for input data
-- JWT-secured endpoints for authentication
-
+- JWT-secured endpoints
 
 ## Limitations
 The app is currently using SQLite as its database, which is not suitable for production use. This means that if the container stops or is removed, all data will be lost(unless you use a volume).  

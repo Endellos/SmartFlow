@@ -45,7 +45,7 @@ class RegisterHandler(tornado.web.RequestHandler):
 
         async with in_transaction():
             user = await User.create(username=username, password=hashed_pw)
-
+        self.set_status(201)
         self.write({"message": "User registered", "id": user.id})
 
 

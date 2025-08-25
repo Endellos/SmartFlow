@@ -29,6 +29,7 @@ class CommentHandler(BaseAuthHandler):
             content=comment_text,
             user=self.current_user
         )
+        self.set_status(201)
         self.write({"id": comment.id, "text": comment.content, "message": "Comment created"})
 
 
