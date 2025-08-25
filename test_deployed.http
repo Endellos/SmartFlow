@@ -1,4 +1,4 @@
-POST http://localhost:8888/api/register
+POST https://smartflow-uwxq.onrender.com/api/register
 Content-Type: application/json
 
 {
@@ -7,7 +7,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:8888/api/login
+POST https://smartflow-uwxq.onrender.com/api/login
 Content-Type: application/json
 
 {
@@ -19,7 +19,7 @@ Content-Type: application/json
 %}
 
 ### Create a new feedback
-POST http://localhost:8888/api/feedback
+POST https://smartflow-uwxq.onrender.com/api/feedback
 Content-Type: application/json
 Authorization: Bearer {{jwt_token}}
 
@@ -29,7 +29,7 @@ Authorization: Bearer {{jwt_token}}
 }
 
 ### rating not in range
-POST http://localhost:8888/api/feedback
+POST https://smartflow-uwxq.onrender.com/api/feedback
 Content-Type: application/json
 Authorization: Bearer {{jwt_token}}
 
@@ -38,7 +38,7 @@ Authorization: Bearer {{jwt_token}}
   "rating": 10
 }
 ###note null should be allowed
-POST http://localhost:8888/api/feedback
+POST https://smartflow-uwxq.onrender.com/api/feedback
 Content-Type: application/json
 Authorization: Bearer {{jwt_token}}
 
@@ -48,19 +48,19 @@ Authorization: Bearer {{jwt_token}}
 }
 
 ### get all feedbacks
-GET http://localhost:8888/api/feedback
+GET https://smartflow-uwxq.onrender.com/api/feedback
 Content-Type: application/json
 
 ### get 1 feedback
-GET http://localhost:8888/api/feedback/1
+GET https://smartflow-uwxq.onrender.com/api/feedback/1
 Content-Type: application/json
 
 ### get non existant feedback
-GET http://localhost:8888/api/feedback/100000
+GET https://smartflow-uwxq.onrender.com/api/feedback/100000
 Content-Type: application/json
 
 ### post comment
-POST http://localhost:8888/api/comment
+POST https://smartflow-uwxq.onrender.com/api/comment
 Content-Type: application/json
 Authorization: Bearer {{jwt_token}}
 
@@ -70,18 +70,18 @@ Authorization: Bearer {{jwt_token}}
 }
 
 ### Get all comments for a feedback
-GET http://localhost:8888/api/feedback/1/comments
+GET https://smartflow-uwxq.onrender.com/api/feedback/1/comments
 Content-Type: application/json
 Authorization: Bearer {{jwt_token}}
 
 ### Get a specific comment
-GET http://localhost:8888/api/comment/1
+GET https://smartflow-uwxq.onrender.com/api/comment/1
 Content-Type: application/json
 Authorization: Bearer {{jwt_token}}
 
 
 ### Create a new feedback notation
-POST http://localhost:8888/api/feedback/2/notations
+POST https://smartflow-uwxq.onrender.com/api/feedback/2/notations
 Content-Type: application/json
 Authorization: Bearer {{jwt_token}}
 
@@ -90,7 +90,7 @@ Authorization: Bearer {{jwt_token}}
 }
 
 ### Update an existing feedback notation
-PATCH http://localhost:8888/api/feedback/2/notations
+PATCH https://smartflow-uwxq.onrender.com/api/feedback/2/notations
 Content-Type: application/json
 Authorization: Bearer {{jwt_token}}
 
@@ -99,7 +99,7 @@ Authorization: Bearer {{jwt_token}}
 }
 
 ### Get summary of notations for a feedback
-GET http://localhost:8888/api/feedback/2/notations/summary
+GET https://smartflow-uwxq.onrender.com/api/feedback/2/notations/summary
 Content-Type: application/json
 Authorization: Bearer {{jwt_token}}
 
@@ -107,7 +107,7 @@ Authorization: Bearer {{jwt_token}}
 ### --- Comment notations ---
 
 ### Create a new comment notation
-POST http://localhost:8888/api/comment/1/notations
+POST https://smartflow-uwxq.onrender.com/api/comment/1/notations
 Content-Type: application/json
 Authorization: Bearer {{jwt_token}}
 
@@ -116,7 +116,7 @@ Authorization: Bearer {{jwt_token}}
 }
 
 ### Update an existing comment notation
-PATCH http://localhost:8888/api/comment/1/notations
+PATCH https://smartflow-uwxq.onrender.com/api/comment/1/notations
 Content-Type: application/json
 Authorization: Bearer {{jwt_token}}
 
@@ -125,7 +125,7 @@ Authorization: Bearer {{jwt_token}}
 }
 
 ### Get summary of notations for a comment
-GET http://localhost:8888/api/comment/1/notations/summary
+GET https://smartflow-uwxq.onrender.com/api/comment/1/notations/summary
 Content-Type: application/json
 Authorization: Bearer {{jwt_token}}
 
